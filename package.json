@@ -1,0 +1,47 @@
+{
+  "name": "ec_app",
+  "license": "see LINCESE IN LINSENSE",
+  "scripts": {
+    "start:api": "npm run watch -w api",
+    "start:front": "npm run start -w front",
+    "db:migrate": "npm run db:migrate -w api",
+    "db:migrate:test": "npm run db:migrate:test -w api",
+    "db:seed": "npm run db:seed -w api",
+    "db:reset": "npm run db:reset -w api",
+    "test:api": "npm run test -w api",
+    "test:api:search_products": "npm run test:search_products -w api",
+    "test:api:get_products": "npm run test:get_products -w api",
+    "test:api:create_order": "npm run test:create_order -w api",
+    "test:api:get_order": "npm run test:get_order -w api",
+    "test:api:get_orders": "npm run test:get_orders -w api",
+    "test:e2e": "npm run test -w e2e",
+    "test:e2e:search": "npm run test:search -w e2e",
+    "test:e2e:cart": "npm run test:cart -w e2e",
+    "test:e2e:order": "npm run test:order -w e2e",
+    "test:e2e:orders": "npm run test:orders -w e2e",
+    "lint:check": "npm run lint:check --ws",
+    "lint:fix": "npm run lint:fix --ws",
+    "format:check": "npm run format:check --ws",
+    "format:fix": "npm run format:fix --ws",
+    "typecheck": "npm run typecheck --ws",
+    "check_puppeteer": "npm run check_puppeteer -w e2e"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "dotenv-cli": "^8.0.0",
+    "eslint": "^9.19.0",
+    "eslint-config-prettier": "^10.0.1",
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.22.0"
+  },
+  "overrides": {
+    "glob": "10.3.16"
+  },
+  "workspaces": [
+    "api",
+    "front",
+    "e2e"
+  ]
+}

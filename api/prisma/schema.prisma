@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  orders    Order[]
+
+  @@map("users")
+}
+
+model Product {
+  id           Int           @id @default(autoincrement())
+  name         String
+  price        Int
+  imageName    String        @map("image_name")
+  stockId      Int           @unique @map("stock_id")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  orderDetails OrderDetail[]
+  stock        Stock         @relation(fields: [stockId], references: [id])
+
+  @@map("products")
+}
+
+model Stock {
+  id        Int      @id @default(autoincrement())
+  quantity  Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  product   Product?
+
+  @@map("stocks")
+}
+
+model Order {
+  id           Int           @id @default(autoincrement())
+  userId       Int           @map("user_id")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  user         User          @relation(fields: [userId], references: [id])
+  orderDetails OrderDetail[]
+
+  @@map("orders")
+}
+
+model OrderDetail {
+  id        Int      @id @default(autoincrement())
+  productId Int      @map("product_id")
+  orderId   Int      @map("order_id")
+  price     Int
+  quantity  Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("order_details")
+}

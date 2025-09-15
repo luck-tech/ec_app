@@ -1,0 +1,57 @@
+{
+  "name": "api",
+  "type": "module",
+  "scripts": {
+    "start": "tsx ./bin/run_server.ts",
+    "start:test": "dotenv -e .env.test -- npm run start",
+    "watch": "tsx watch ./bin/run_server.ts",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:test": "dotenv -e .env.test -- prisma migrate dev",
+    "db:seed": "prisma db seed",
+    "db:seed:test": "dotenv -e .env.test -- prisma db seed",
+    "db:reset": "prisma migrate reset",
+    "db:reset:test": "dotenv -e .env.test -- prisma migrate reset --force",
+    "test": "npm run db:reset:test && dotenv -e .env.test -- jest",
+    "test:search_products": "npm run test -- search_products.ts",
+    "test:get_products": "npm run test -- get_products.ts",
+    "test:create_order": "npm run test -- create_order.ts",
+    "test:get_order": "npm run test -- get_order.ts",
+    "test:get_orders": "npm run test -- get_orders.ts",
+    "lint:check": "eslint",
+    "lint:fix": "eslint --fix",
+    "format:check": "prettier --check '**/*.{js,ts}'",
+    "format:fix": "prettier --write '**/*.{js,ts}'",
+    "typecheck": "tsc --noEmit --skipLibCheck --project tsconfig.json"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.3.0",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.2",
+    "express-async-errors": "^3.1.1",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "prisma": "^6.3.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@quramy/jest-prisma": "^1.8.1",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/morgan": "^1.9.9",
+    "@types/multer": "^1.4.12",
+    "cross-fetch": "^4.1.0",
+    "jest": "^29.7.0",
+    "jest-dev-server": "^11.0.0",
+    "ts-jest": "^29.2.5"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
+}
