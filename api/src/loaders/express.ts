@@ -3,6 +3,8 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import logger from "morgan";
 import {router as authRouter} from "@/routes/auth";
+import {router as productRouter} from "@/routes/product";
+import {router as orderRouter} from "@/routes/order";
 import {currentUserMiddleware} from "@/middlewares/current_user";
 import {errorHandler} from "@/middlewares/error_handler";
 
@@ -44,6 +46,8 @@ const loadUser = (app: Express) => {
 
 const loadRouter = (app: Express) => {
   app.use("/api/auth", authRouter);
+  app.use("/api/products", productRouter);
+  app.use("/api/orders", orderRouter);
 };
 
 const loadSecureHeaders = (app: Express) => {
