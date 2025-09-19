@@ -11,6 +11,13 @@ export class HttpClientError extends Error {
   }
 }
 
+export class BadRequestError extends HttpClientError {
+  constructor(message = "Bad Request") {
+    super(message, 400);
+    this.name = "BadRequestError";
+  }
+}
+
 export class UnauthorizedError extends HttpClientError {
   constructor(message = "Unauthorized") {
     super(message, 401);
