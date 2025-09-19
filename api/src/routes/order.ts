@@ -102,14 +102,9 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/", ensureAuthUser, async (req, res) => {
   try {
-    const currentUser = req.currentUser;
-    if (!currentUser) {
-      throw new UnauthorizedError();
-    }
-
-    const orders = await getOrders(currentUser.id);
+    const orders = await getOrders(req.currentUser!.id); // ensureAuthUserで非nullは保証済み
     if (!orders) {
       res.status(404).json({message: "Not Found"});
       return;

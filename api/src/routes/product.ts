@@ -36,18 +36,14 @@ router.get(
   },
 );
 
-router.get("/", async (req, res) => {
+router.get("/", ensureAuthUser, async (req, res) => {
   try {
-    const currentUser = req.currentUser;
-    if (!currentUser) {
-      throw new UnauthorizedError();
-    }
     const params: ProductQueryParams = req.query;
     const productIds = params.productIds;
 
     const result = await getProduct({
       productIds: productIds,
-      userId: currentUser.id,
+      userId: req.currentUser!.id, // ensureAuthUserで非nullは保証済み
     });
 
     // resultが配列の場合とオブジェクトの場合を処理
