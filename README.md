@@ -73,6 +73,7 @@ api/
 │   ├── lib/              # ユーティリティライブラリ
 │   │   ├── errors.ts     # エラーハンドリング
 │   │   ├── hash_password.ts  # パスワードハッシュ化
+│   │   ├── request_handler.ts  # リクエストハンドラの抽象化
 │   │   └── jwt_token.ts  # JWT認証
 │   ├── loaders/
 │   │   └── express.ts    # Expressミドルウェア設定
