@@ -10,7 +10,7 @@ export const router = express.Router();
 
 // カスタムバリデーター: 商品の存在チェック
 const validateProductExists = async (productId: number, meta: Meta) => {
-  const req = meta.req as express.Request;
+  const req = meta.req;
   const product = await getProduct({
     productIds: productId.toString(),
     userId: req.currentUser!.id,
