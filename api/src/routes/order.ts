@@ -1,26 +1,12 @@
 import express from "express";
-import {body, validationResult, Meta} from "express-validator";
+import {body, validationResult} from "express-validator";
 import {UnauthorizedError, ValidationError} from "@/lib/errors";
 import {ensureAuthUser} from "@/middlewares/authentication";
 import {postOrder, getOrderById, getOrders} from "@/models/order";
-import {getProduct} from "@/models/product";
 import {InsufficientStockError, OrderQueryParams} from "@/types/order";
+import { validateProductExists } from "@/middlewares/validation";
 
 export const router = express.Router();
-
-// カスタムバリデーター: 商品の存在チェック
-const validateProductExists = async (productId: number, meta: Meta) => {
-  const req = meta.req;
-  const product = await getProduct({
-    productIds: productId.toString(),
-    userId: req.currentUser!.id,
-  });
-
-  if (!product || Array.isArray(product) || product.products.length === 0) {
-    throw new Error("specified product does not exist");
-  }
-  return true;
-};
 
 router.post(
   "/",
