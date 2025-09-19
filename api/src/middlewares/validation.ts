@@ -1,6 +1,6 @@
 import {getProduct} from "@/models/product";
-import {CustomValidator, query} from "express-validator";
-import {body} from "express-validator";
+import {CustomValidator, query, body} from "express-validator";
+import {VALIDATION_MESSAGES} from "@/constants/index";
 
 export const validateProductExists: CustomValidator = async (value, {req}) => {
   const productId = parseInt(value, 10);
@@ -11,7 +11,7 @@ export const validateProductExists: CustomValidator = async (value, {req}) => {
   });
 
   if (!product || Array.isArray(product) || product.products.length === 0) {
-    throw new Error("specified product does not exist");
+    throw new Error(VALIDATION_MESSAGES.PRODUCT_NOT_FOUND);
   }
 
   return true;
@@ -20,30 +20,30 @@ export const validateProductExists: CustomValidator = async (value, {req}) => {
 export const createOrderValidations = [
   body()
     .isArray()
-    .withMessage("body must be an array")
+    .withMessage(VALIDATION_MESSAGES.BODY_MUST_BE_ARRAY)
     .bail()
     .isArray({min: 1})
-    .withMessage("body must have at least one item"),
+    .withMessage(VALIDATION_MESSAGES.BODY_MIN_ONE_ITEM),
 
   body("*.productId")
     .notEmpty()
-    .withMessage("productId is required")
+    .withMessage(VALIDATION_MESSAGES.PRODUCT_ID_REQUIRED)
     .isInt()
-    .withMessage("productId must be a number")
+    .withMessage(VALIDATION_MESSAGES.PRODUCT_ID_MUST_BE_NUMBER)
     .custom(validateProductExists),
 
   body("*.quantity")
     .notEmpty()
-    .withMessage("quantity is required")
+    .withMessage(VALIDATION_MESSAGES.QUANTITY_REQUIRED)
     .isNumeric()
-    .withMessage("quantity must be a number")
+    .withMessage(VALIDATION_MESSAGES.QUANTITY_MUST_BE_NUMBER)
     .isInt({min: 1})
-    .withMessage("quantity must be greater than 1"),
+    .withMessage(VALIDATION_MESSAGES.QUANTITY_MIN_ONE),
 ];
 
 export const getProductSearchValidation = [
   query("page")
     .optional()
     .isInt({min: 1})
-    .withMessage("Invalid page parameter"),
+    .withMessage(VALIDATION_MESSAGES.INVALID_PAGE),
 ];
