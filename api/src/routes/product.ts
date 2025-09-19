@@ -1,21 +1,17 @@
 import express from "express";
-import {query, validationResult} from "express-validator";
+import {validationResult} from "express-validator";
 import {UnauthorizedError, ValidationError} from "@/lib/errors";
 import {ensureAuthUser} from "@/middlewares/authentication";
 import {getProduct, getProductSearch} from "@/models/product";
 import {ProductQueryParams} from "@/types/product";
+import {getProductSearchValidation} from "@/middlewares/validation";
 
 export const router = express.Router();
 
 router.get(
   "/search",
   ensureAuthUser,
-  [
-    query("page")
-      .optional()
-      .isInt({min: 1})
-      .withMessage("Invalid page parameter"),
-  ],
+  getProductSearchValidation,
   async (req: express.Request, res: express.Response) => {
     const result = validationResult(req);
     if (!result.isEmpty()) {

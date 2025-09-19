@@ -1,37 +1,17 @@
 import express from "express";
-import {body, validationResult} from "express-validator";
+import {validationResult} from "express-validator";
 import {UnauthorizedError, ValidationError} from "@/lib/errors";
 import {ensureAuthUser} from "@/middlewares/authentication";
 import {postOrder, getOrderById, getOrders} from "@/models/order";
 import {InsufficientStockError, OrderQueryParams} from "@/types/order";
-import { validateProductExists } from "@/middlewares/validation";
+import {createOrderValidations} from "@/middlewares/validation";
 
 export const router = express.Router();
 
 router.post(
   "/",
   ensureAuthUser,
-  [
-    body()
-      .isArray()
-      .withMessage("body must be an array")
-      .bail()
-      .isArray({min: 1})
-      .withMessage("body must have at least one item"),
-    body("*.productId")
-      .notEmpty()
-      .withMessage("productId is required")
-      .isInt()
-      .withMessage("productId must be a number")
-      .custom(validateProductExists),
-    body("*.quantity")
-      .notEmpty()
-      .withMessage("quantity is required")
-      .isNumeric()
-      .withMessage("quantity must be a number")
-      .isInt({min: 1})
-      .withMessage("quantity must be greater than 1"),
-  ],
+  createOrderValidations,
   async (req: express.Request, res: express.Response) => {
     const result = validationResult(req);
     if (!result.isEmpty()) {
