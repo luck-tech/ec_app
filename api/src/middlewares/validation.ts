@@ -1,6 +1,13 @@
 import {getProduct} from "@/models/product";
-import {CustomValidator, query, body} from "express-validator";
+import {
+  CustomValidator,
+  query,
+  body,
+  validationResult,
+} from "express-validator";
 import {VALIDATION_MESSAGES} from "@/constants/index";
+import {NextFunction, Request, Response} from "express";
+import {ValidationError} from "@/lib/errors";
 
 export const validateProductExists: CustomValidator = async (value, {req}) => {
   const productId = parseInt(value, 10);
@@ -47,3 +54,17 @@ export const getProductSearchValidation = [
     .isInt({min: 1})
     .withMessage(VALIDATION_MESSAGES.INVALID_PAGE),
 ];
+
+export const handleValidationErrors = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // バリデーションエラーがあれば、ValidationErrorをスローする
+    throw new ValidationError(errors.array().map(error => error.msg));
+  }
+  // エラーがなければ次のミドルウェアへ
+  next();
+};
