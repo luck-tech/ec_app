@@ -140,30 +140,7 @@ e2e/
 
 ## 開発・実行環境
 
-### 開発コマンド
-- `npm run start:api`: APIサーバー起動（開発モード）
-- `npm run start:front`: フロントエンドサーバー起動
-- `npm run db:migrate`: データベースマイグレーション実行
-- `npm run db:seed`: データベースシードデータ投入
-- `npm run test:api`: APIテスト実行
-- `npm run test:e2e`: E2Eテスト実行
-
 ### ポート設定
 - フロントエンド: 3000番ポート
 - バックエンドAPI: 8000番ポート
 - プロキシ設定により、フロントエンドから `/api` と `/image` へのリクエストはバックエンドにプロキシされる
-
-### 環境変数
-- `DATABASE_URL`: データベース接続URL
-- `NODE_ENV`: 環境設定（development/test/production）
-- `PORT`: フロントエンドポート番号
-- `API_PORT`: バックエンドAPIポート番号
-
-## 特徴・設計思想
-
-1. **モノレポ構成**: フロントエンド、バックエンド、E2Eテストを統一リポジトリで管理
-2. **TypeScript Full Stack**: フロントエンドからバックエンドまで一貫したTypeScript使用
-3. **モダンフレームワーク**: React 19、Vite 6、Express、Prismaの最新技術スタック
-4. **テスト駆動**: APIテスト、E2Eテストの充実した自動テスト環境
-5. **セキュリティ重視**: JWT認証、パスワードハッシュ化、Helmetによるセキュリティヘッダー
-6. **開発効率**: Hot reload、自動リロード、型安全性による高い開発効率
