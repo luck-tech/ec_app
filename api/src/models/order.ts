@@ -18,41 +18,6 @@ export const postOrder = async (params: orderQueryParams[], userId: number) => {
   return await prisma.$transaction(async tx => {
     const errors: string[] = [];
 
-    // バリデーション
-    if (!Array.isArray(params)) {
-      errors.push("body must be an array");
-    } else if (params.length === 0) {
-      errors.push("body must have at least one item");
-    } else {
-      // 各パラメータの基本バリデーション
-      for (const param of params) {
-        if (!param.productId) {
-          errors.push("productId is required");
-          break;
-        }
-        if (isNaN(param.productId)) {
-          errors.push("productId must be a number");
-          break;
-        }
-        if (param.quantity === undefined || param.quantity === null) {
-          errors.push("quantity is required");
-          break;
-        }
-        if (isNaN(param.quantity)) {
-          errors.push("quantity must be a number");
-          break;
-        }
-        if (param.quantity < 1) {
-          errors.push("quantity must be greater than 1");
-          break;
-        }
-      }
-    }
-
-    if (errors.length > 0) {
-      throw new InsufficientStockError(errors);
-    }
-
     // 商品情報と在庫情報を取得
     const productIds = params.map(p => p.productId);
     const products = await tx.product.findMany({

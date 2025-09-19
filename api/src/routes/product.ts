@@ -1,5 +1,7 @@
 import express from "express";
-import {UnauthorizedError} from "@/lib/errors";
+import {query, validationResult} from "express-validator";
+import {UnauthorizedError, ValidationError} from "@/lib/errors";
+import {ensureAuthUser} from "@/middlewares/authentication";
 import {getProduct, getProductSearch, ProductItem} from "@/models/product";
 
 export type productSearchParams = {
@@ -18,37 +20,34 @@ export interface getProductSearchApiResponse {
 
 export const router = express.Router();
 
-router.get("/search", async (req, res) => {
-  try {
-    const currentUser = req.currentUser;
-    if (!currentUser) {
-      throw new UnauthorizedError();
+router.get(
+  "/search",
+  ensureAuthUser,
+  [
+    query("page")
+      .optional()
+      .isInt({min: 1})
+      .withMessage("Invalid page parameter"),
+  ],
+  async (req: express.Request, res: express.Response) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      throw new ValidationError(result.array().map(error => error.msg));
     }
+
     const params: productSearchParams = req.query;
     const filter = params.filter || "";
     const page = params.page ? parseInt(params.page, 10) : 1;
 
-    if (isNaN(page) || page < 1) {
-      res.status(400).json({error: "Invalid page parameter"});
-      return;
-    }
-
     const results: getProductSearchApiResponse = await getProductSearch({
       filter: filter,
       page: page,
-      userId: currentUser.id,
+      userId: req.currentUser!.id,
     });
 
     res.json(results);
-  } catch (error) {
-    if (error instanceof UnauthorizedError) {
-      res.status(401).json({message: "Unauthorized"});
-      return;
-    }
-    console.error("Error occurred while searching products:", error);
-    res.status(500).json({error: "Internal Server Error"});
-  }
-});
+  },
+);
 
 router.get("/", async (req, res) => {
   try {
