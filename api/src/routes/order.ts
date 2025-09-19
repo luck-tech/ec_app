@@ -58,20 +58,15 @@ router.post(
   },
 );
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", ensureAuthUser, async (req, res) => {
   try {
-    const currentUser = req.currentUser;
-    if (!currentUser) {
-      throw new UnauthorizedError();
-    }
-
     const orderId = parseInt(req.params.id, 10);
     if (isNaN(orderId)) {
       res.status(400).json({message: "Invalid order ID"});
       return;
     }
 
-    const order = await getOrderById(orderId, currentUser.id);
+    const order = await getOrderById(orderId, req.currentUser!.id);
     if (!order) {
       res.status(404).json({message: "Not Found"});
       return;
