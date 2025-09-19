@@ -2,21 +2,8 @@ import express from "express";
 import {query, validationResult} from "express-validator";
 import {UnauthorizedError, ValidationError} from "@/lib/errors";
 import {ensureAuthUser} from "@/middlewares/authentication";
-import {getProduct, getProductSearch, ProductItem} from "@/models/product";
-
-export type productSearchParams = {
-  filter?: string;
-  page?: string;
-};
-
-export type productQueryParams = {
-  productIds?: string;
-};
-
-export interface getProductSearchApiResponse {
-  products: ProductItem[];
-  hitCount: number;
-}
+import {getProduct, getProductSearch} from "@/models/product";
+import {ProductQueryParams} from "@/types/product";
 
 export const router = express.Router();
 
@@ -35,11 +22,11 @@ router.get(
       throw new ValidationError(result.array().map(error => error.msg));
     }
 
-    const params: productSearchParams = req.query;
-    const filter = params.filter || "";
-    const page = params.page ? parseInt(params.page, 10) : 1;
-
-    const results: getProductSearchApiResponse = await getProductSearch({
+    const params = req.query;
+    const filter = typeof params.filter === "string" ? params.filter : "";
+    const page =
+      typeof params.page === "string" ? parseInt(params.page, 10) : 1;
+    const results = await getProductSearch({
       filter: filter,
       page: page,
       userId: req.currentUser!.id,
@@ -55,7 +42,7 @@ router.get("/", async (req, res) => {
     if (!currentUser) {
       throw new UnauthorizedError();
     }
-    const params: productQueryParams = req.query;
+    const params: ProductQueryParams = req.query;
     const productIds = params.productIds;
 
     const result = await getProduct({

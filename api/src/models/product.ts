@@ -1,40 +1,16 @@
 import {databaseManager} from "@/db";
-import {Prisma} from "@prisma/client";
-
-export type ProductItem = {
-  id: number; // 商品 ID
-  name: string; // 商品名
-  price: number; // 商品の価格
-  imageName: string; // 商品の画像名
-  stockId: number; // 商品に紐づいた在庫 ID
-  createdAt: string; // 商品の作成日時
-  updatedAt: string; // 商品の更新日時
-  quantity: number; // 商品の在庫数（stocks テーブルの quantity カラム）
-  lastOrderedAt?: string; // ログイン中のユーザーが対象の商品を最後に注文した日時（orders テーブルの createdAt カラム）
-};
-
-export interface getProductSearchParams {
-  filter: string;
-  page: number;
-  userId: number;
-}
-
-export interface getProductParams {
-  productIds?: string;
-  userId: number;
-}
-
-type OrderDetailWithOrder = Prisma.OrderDetailGetPayload<{
-  include: {
-    order: true;
-  };
-}>;
+import {OrderDetailWithOrder} from "@/types/prisma-types";
+import {
+  ProductItem,
+  ProductQueryParams,
+  ProductSearchParams,
+} from "@/types/product";
 
 export const getProductSearch = async ({
   filter,
   page,
   userId,
-}: getProductSearchParams) => {
+}: ProductSearchParams) => {
   const prisma = databaseManager.getInstance();
 
   const limit = 10;
@@ -99,7 +75,7 @@ export const getProductSearch = async ({
   };
 };
 
-export const getProduct = async ({productIds, userId}: getProductParams) => {
+export const getProduct = async ({productIds, userId}: ProductQueryParams) => {
   const prisma = databaseManager.getInstance();
   // productIds文字列を分割して数値配列に変換（undefinedの場合は空配列）
   const productIdArray = productIds

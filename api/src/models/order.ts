@@ -1,18 +1,7 @@
 import {databaseManager} from "@/db";
+import {InsufficientStockError, OrderQueryParams} from "@/types/order";
 
-export type orderQueryParams = {
-  productId: number;
-  quantity: number;
-};
-
-export class InsufficientStockError extends Error {
-  constructor(public errors: string[]) {
-    super("Insufficient stock");
-    this.name = "InsufficientStockError";
-  }
-}
-
-export const postOrder = async (params: orderQueryParams[], userId: number) => {
+export const postOrder = async (params: OrderQueryParams[], userId: number) => {
   const prisma = databaseManager.getInstance();
 
   return await prisma.$transaction(async tx => {
