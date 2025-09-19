@@ -1,5 +1,5 @@
 import {databaseManager} from "@/db";
-import {InsufficientStockError, OrderQueryParams} from "@/types/order";
+import {OrderQueryParams} from "@/types/order";
 
 export const postOrder = async (params: OrderQueryParams[], userId: number) => {
   const prisma = databaseManager.getInstance();
@@ -34,7 +34,7 @@ export const postOrder = async (params: OrderQueryParams[], userId: number) => {
     }
 
     if (errors.length > 0) {
-      throw new InsufficientStockError(errors);
+      return {success: false, errors};
     }
 
     // 注文レコードを作成
@@ -71,7 +71,8 @@ export const postOrder = async (params: OrderQueryParams[], userId: number) => {
       });
     }
 
-    return {orderId: order.id};
+    // 成功した場合、成功情報を持ったオブジェクトを返す
+    return {success: true, orderId: order.id};
   });
 };
 
